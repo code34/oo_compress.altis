@@ -1,9 +1,9 @@
 	call compilefinal preprocessFileLineNumbers "oo_compress.sqf";
 
-	sleep 1;
+	sleep 2;
 
 	private _compress = "new" call OO_COMPRESS;
-	
+
 	private _data = "To be, or not to be: that is the question: 
 			Whether 'tis nobler in the mind to suffer
 			The slings and arrows of outrageous fortune,
@@ -37,3 +37,8 @@
 			And enterprises of great pith and moment
 			With this regard their currents turn awry
 			And lose the name of action.";
+
+	//_result = ["quantify", _data] call _compress;
+	//_stream = ["decodeStream",nil] call _compress;
+	["generateIndex", nil] call _compress;
+	//hintc format ["%1", _stream];

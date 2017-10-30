@@ -21,10 +21,100 @@
 	#include "oop.h"
 
 	CLASS("OO_COMPRESS")
-		PRIVATE VARIABLE("array","tree");
+		PRIVATE VARIABLE("string","stream");
+		PRIVATE VARIABLE("array","map");
+		PRIVATE VARIABLE("string","data");
 
 		PUBLIC FUNCTION("","constructor") {	
-			MEMBER("tree", []);
+			MEMBER("stream", "1101010100101010101010101001010100101001010100101001010100100100010111001010101");
+			MEMBER("map", []);
+			MEMBER("data", "");
+
+			player setVariable ["11", "A"];
+			player setVariable ["1", "F"];
+			player setVariable ["0", "B"];
+			player setVariable ["01", "C"];
+			player setVariable ["111", "D"];
+			player setVariable ["1001", "G"];
+		};
+
+		PUBLIC FUNCTION("string","quantify") {
+			private _result = [];
+			private _index = 0;
+			private _i = 0;
+			private _test = toArray (_this);
+			private _array = [];
+
+			for "_i" from 0 to 256 step 1 do { _result set [_i, [0,0]]; };
+			{
+				_array = [(((_result select _x) select 0) + 1), toString[_x]];
+				_result set [_x, _array];
+			} forEach _test;
+
+			for "_i" from 0 to 256 step 1 do { 
+				if((_result select _i) isEqualTo [0,0]) then {
+					_result set [_i, -1];
+				};
+			};
+			_result = _result - [-1];
+			hint format ["%1", count _result];
+			//MEMBER("map", _result);
+		};
+
+		PUBLIC FUNCTION("","generateIndex") {
+			private _array = [];
+			private _rank = [0,0,0,0,0,0];
+			private _count = (count _rank) - 1;
+			private _index = _count;
+
+			while { true} do {
+				if((_rank select _index) isEqualTo 0) then {
+					_rank set [_index, 1];
+				} else {					
+					while { (_rank select _index) isEqualTo 1} do {
+						_rank set [_index, 0];
+						_index = _index - 1;
+					};
+					_rank set [_index, 1];
+					_index = _count;
+				};
+				hint format ["%1", _rank];
+				sleep 0.1;
+			};
+		};
+
+		PUBLIC FUNCTION("scalar","getNextBit") {
+			MEMBER("stream", nil) select _this;
+		};
+
+		PUBLIC FUNCTION("","decodeStream") {
+			private _counter = 1;
+			private _somme = 0;
+			private _begin = 0;
+			private _realbit = "";
+			private _letterback = "";
+			private _count = count MEMBER("stream", nil);
+			private _stream = MEMBER("stream", nil);
+
+			for "_i" from 0 to _count do {
+				_element = _stream select [_begin, _counter];
+				_letter = player getVariable [_element, []];
+				if(_letter isEqualTo []) then { 
+					_realbit = _realbit + _letterback; 
+					_begin = _i + 1;
+					_counter = 1;
+				} else { 
+					_letterback = _letter;
+					_counter = _counter + 1;
+				};
+			};
+			_realbit;
+		};
+
+		PUBLIC FUNCTION("string","compress") {
+			MEMBER("data", _this);
+			MEMBER("quantify", _this);
+			MEMBER("createTree", nil);
 		};
 
 		PUBLIC FUNCTION("array","DecToBin") {
@@ -80,7 +170,6 @@
 		PUBLIC FUNCTION("string","StrToHexa") {
 			MEMBER("DecToHexa", toArray (_this));
 		};
-
 
 		PUBLIC FUNCTION("string","HexaToDec") {
 			private _hexa = toArray "0123456789ABCDEF";
