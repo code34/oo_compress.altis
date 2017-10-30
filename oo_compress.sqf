@@ -67,7 +67,7 @@
 			private _count = (count _rank) - 1;
 			private _index = _count;
 
-			while { true} do {
+			while { !(_rank isEqualTo [1,1,1,1,1,1]) } do {
 				if((_rank select _index) isEqualTo 0) then {
 					_rank set [_index, 1];
 				} else {					
@@ -78,7 +78,8 @@
 					_rank set [_index, 1];
 					_index = _count;
 				};
-				hint format ["%1", _rank];
+				_array pushBack +_rank;
+				hint format ["%1 %2", count _array, _array];
 				sleep 0.1;
 			};
 		};
