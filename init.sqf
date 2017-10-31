@@ -40,5 +40,6 @@
 
 	//_result = ["quantify", _data] call _compress;
 	//_stream = ["decodeStream",nil] call _compress;
-	["generateIndex", nil] call _compress;
-	//hintc format ["%1", _stream];
+	
+	_index = ["generateIndex", 49] call _compress;
+	hintc format ["%1", _index];

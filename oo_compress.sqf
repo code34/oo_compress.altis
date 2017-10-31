@@ -61,13 +61,19 @@
 			//MEMBER("map", _result);
 		};
 
-		PUBLIC FUNCTION("","generateIndex") {
+		PUBLIC FUNCTION("scalar","generateIndex") {
 			private _array = [];
-			private _rank = [0,0,0,0,0,0];
+			private _rank = [];
+			private _end = [];
+			private _square = 0;
+			
+			while { (_square ^ 2) < _this } do { _square = _square + 1;};
+			for "_i" from 0 to _square step 1 do { _rank pushBack 0; _end pushBack 1;};
+
 			private _count = (count _rank) - 1;
 			private _index = _count;
 
-			while { !(_rank isEqualTo [1,1,1,1,1,1]) } do {
+			while { !(_rank isEqualTo _end) } do {
 				if((_rank select _index) isEqualTo 0) then {
 					_rank set [_index, 1];
 				} else {					
@@ -79,10 +85,17 @@
 					_index = _count;
 				};
 				_array pushBack +_rank;
-				hint format ["%1 %2", count _array, _array];
-				sleep 0.1;
 			};
+			_array;
 		};
+
+		PUBLIC FUNCTION("","generateTree") {
+			private _array = [["A", 15], ["B", 23], ["C",6], ["D", 8], ["E",14], ["Z", 2]];
+			private _count = count _array;
+
+			_index = MEMBER("generateindex", _count);
+		};
+
 
 		PUBLIC FUNCTION("scalar","getNextBit") {
 			MEMBER("stream", nil) select _this;
