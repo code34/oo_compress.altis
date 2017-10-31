@@ -28,7 +28,15 @@
 
 		PUBLIC FUNCTION("","constructor") {	
 			MEMBER("stream", "1101010100101010101010101001010100101001010100101001010100100100010111001010101");
-			private _array = [["A", 85], ["B", 23], ["C",6], ["D", 8], ["E",14], ["Z", 2], ["I", 20]];
+			private _array = [
+				["A", 85,85], 
+				["B", 23,23], 
+				["C",6,6], 
+				["D", 8,8], 
+				["E",14,14], 
+				["Z", 2,2], 
+				["I", 20,2]
+			];
 			MEMBER("record", _array);
 
 			MEMBER("map", []);
@@ -91,30 +99,31 @@
 			_array;
 		};
 
-		PUBLIC FUNCTION("","getNextLeaf") {
-			if(count MEMBER("record", nil) < 1 ) exitWith {[]};
+		PUBLIC FUNCTION("array","getNextLeaf") {
+			if(count _this < 1) exitWith {[]};
+			private _array = _this;
 			private _max = 1000;
 			private _index = 0;	
 
 			{
-				if((_x select 1) < _max) then {
-					_max = _x select 1;
+				if((_x select 2) < _max) then {
+					_max = _x select 2;
 					_index = _forEachIndex;
 				};
-			} forEach  MEMBER("record", nil);
-			MEMBER("record", nil) deleteAt _index;
+			} forEach  _array;
+			_array deleteAt _index;
 		};
 
 
 		PUBLIC FUNCTION("","createTree") {
 			private _array = [[],[],0];
-			private _element1 = MEMBER("getNextLeaf", nil);
+			private _element1 = MEMBER("getNextLeaf", MEMBER("record", nil));
 			if!(_element1 isEqualTo []) then { 
 				_array set [0, _element1]; 
 				_array set[2, _element1 select 1];
 			};
 
-			private _element2 = MEMBER("getNextLeaf", nil);
+			private _element2 = MEMBER("getNextLeaf", MEMBER("record", nil));
 			if!(_element2 isEqualTo []) then { 
 				_array set [1, _element2]; 
 				_array set [2, ((_array select 2) + (_element2 select 1))];
@@ -124,6 +133,8 @@
 
 		PUBLIC FUNCTION("","generateAllTree") {
 			private _array = [];
+			private _array2 = [];
+
 			while {count MEMBER("record", nil) > 0} do {
 				_array pushBack MEMBER("createTree", nil);
 			};
