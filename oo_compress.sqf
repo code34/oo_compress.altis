@@ -23,10 +23,14 @@
 	CLASS("OO_COMPRESS")
 		PRIVATE VARIABLE("string","stream");
 		PRIVATE VARIABLE("array","map");
+		PRIVATE VARIABLE("array","record");
 		PRIVATE VARIABLE("string","data");
 
 		PUBLIC FUNCTION("","constructor") {	
 			MEMBER("stream", "1101010100101010101010101001010100101001010100101001010100100100010111001010101");
+			private _array = [["A", 85], ["B", 23], ["C",6], ["D", 8], ["E",14], ["Z", 2], ["I", 20]];
+			MEMBER("record", _array);
+
 			MEMBER("map", []);
 			MEMBER("data", "");
 
@@ -57,8 +61,6 @@
 				};
 			};
 			_result = _result - [-1];
-			hint format ["%1", count _result];
-			//MEMBER("map", _result);
 		};
 
 		PUBLIC FUNCTION("scalar","generateIndex") {
@@ -73,7 +75,7 @@
 			private _count = (count _rank) - 1;
 			private _index = _count;
 
-			while { !(_rank isEqualTo _end) } do {
+			while { (count _array) -1 < _this  } do {
 				if((_rank select _index) isEqualTo 0) then {
 					_rank set [_index, 1];
 				} else {					
@@ -89,13 +91,44 @@
 			_array;
 		};
 
-		PUBLIC FUNCTION("","generateTree") {
-			private _array = [["A", 15], ["B", 23], ["C",6], ["D", 8], ["E",14], ["Z", 2]];
-			private _count = count _array;
+		PUBLIC FUNCTION("","getNextLeaf") {
+			if(count MEMBER("record", nil) < 1 ) exitWith {[]};
+			private _max = 1000;
+			private _index = 0;	
 
-			_index = MEMBER("generateindex", _count);
+			{
+				if((_x select 1) < _max) then {
+					_max = _x select 1;
+					_index = _forEachIndex;
+				};
+			} forEach  MEMBER("record", nil);
+			MEMBER("record", nil) deleteAt _index;
 		};
 
+
+		PUBLIC FUNCTION("","createTree") {
+			private _array = [[],[],0];
+			private _element1 = MEMBER("getNextLeaf", nil);
+			if!(_element1 isEqualTo []) then { 
+				_array set [0, _element1]; 
+				_array set[2, _element1 select 1];
+			};
+
+			private _element2 = MEMBER("getNextLeaf", nil);
+			if!(_element2 isEqualTo []) then { 
+				_array set [1, _element2]; 
+				_array set [2, ((_array select 2) + (_element2 select 1))];
+			};
+			_array;
+		};
+
+		PUBLIC FUNCTION("","generateAllTree") {
+			private _array = [];
+			while {count MEMBER("record", nil) > 0} do {
+				_array pushBack MEMBER("createTree", nil);
+			};
+			_array;
+		};
 
 		PUBLIC FUNCTION("scalar","getNextBit") {
 			MEMBER("stream", nil) select _this;
