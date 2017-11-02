@@ -1,4 +1,4 @@
-	call compilefinal preprocessFileLineNumbers "oo_compress.sqf";
+	call compile preprocessFileLineNumbers "oo_compress.sqf";
 
 	sleep 2;
 
