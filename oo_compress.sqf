@@ -26,7 +26,8 @@
 		PRIVATE VARIABLE("array","record");
 		PRIVATE VARIABLE("string","data");
 
-		PUBLIC FUNCTION("","constructor") {	
+		PUBLIC FUNCTION("","constructor") {
+			DEBUG(#, "OO_COMPRESS::constructor")
 			MEMBER("stream", "1101010100101010101010101001010100101001010100101001010100100100010111001010101");
 			private _array = [
 				["A", 85,85], 
@@ -38,10 +39,8 @@
 				["I", 20,2]
 			];
 			MEMBER("record", _array);
-
 			MEMBER("map", []);
 			MEMBER("data", "");
-
 			player setVariable ["11", "A"];
 			player setVariable ["1", "F"];
 			player setVariable ["0", "B"];
@@ -51,6 +50,7 @@
 		};
 
 		PUBLIC FUNCTION("string","quantify") {
+			DEBUG(#, "OO_COMPRESS::quantify")
 			private _result = [];
 			private _index = 0;
 			private _i = 0;
@@ -72,6 +72,7 @@
 		};
 
 		PUBLIC FUNCTION("scalar","generateIndex") {
+			DEBUG(#, "OO_COMPRESS::generateIndex")
 			private _array = [];
 			private _rank = [];
 			private _end = [];
@@ -100,6 +101,7 @@
 		};
 
 		PUBLIC FUNCTION("array","getNextLeaf") {
+			DEBUG(#, "OO_COMPRESS::getNextLeaf")
 			if(count _this < 1) exitWith {[]};
 			private _array = _this;
 			private _max = 1000;
@@ -116,6 +118,7 @@
 
 
 		PUBLIC FUNCTION("","createTree") {
+			DEBUG(#, "OO_COMPRESS::createTree")
 			private _array = [[],[],0];
 			private _element1 = MEMBER("getNextLeaf", MEMBER("record", nil));
 			if!(_element1 isEqualTo []) then { 
@@ -132,6 +135,7 @@
 		};
 
 		PUBLIC FUNCTION("","generateAllTree") {
+			DEBUG(#, "OO_COMPRESS::generateAllTree")
 			private _array = [];
 			private _array2 = [];
 
@@ -142,10 +146,12 @@
 		};
 
 		PUBLIC FUNCTION("scalar","getNextBit") {
+			DEBUG(#, "OO_COMPRESS::getNextBit")
 			MEMBER("stream", nil) select _this;
 		};
 
 		PUBLIC FUNCTION("","decodeStream") {
+			DEBUG(#, "OO_COMPRESS::decodeStream")
 			private _counter = 1;
 			private _somme = 0;
 			private _begin = 0;
@@ -170,12 +176,14 @@
 		};
 
 		PUBLIC FUNCTION("string","compress") {
+			DEBUG(#, "OO_COMPRESS::compress")
 			MEMBER("data", _this);
 			MEMBER("quantify", _this);
 			MEMBER("createTree", nil);
 		};
 
 		PUBLIC FUNCTION("array","DecToBin") {
+			DEBUG(#, "OO_COMPRESS::DecToBin")
 			private _binary = [];
 			private _decimal = 0;
 			private _bool = false;
@@ -194,6 +202,7 @@
 		};
 
 		PUBLIC FUNCTION("array","BinToDec") {
+			DEBUG(#, "OO_COMPRESS::BinToDec")
 			private _decimal = 0;
 			private _decimals = [];
 			private _bool = false;
@@ -213,6 +222,7 @@
 		};
 
 		PUBLIC FUNCTION("array","DecToHexa") {
+			DEBUG(#, "OO_COMPRESS::DecToHexa")
 			private _hexa = "0123456789ABCDEF";
 			private _strings = "";
 
@@ -226,10 +236,12 @@
 		};
 
 		PUBLIC FUNCTION("string","StrToHexa") {
+			DEBUG(#, "OO_COMPRESS::StrToHexa")
 			MEMBER("DecToHexa", toArray (_this));
 		};
 
 		PUBLIC FUNCTION("string","HexaToDec") {
+			DEBUG(#, "OO_COMPRESS::HexaToDec")
 			private _hexa = toArray "0123456789ABCDEF";
 			private _array = toArray _this;
 			private _decimals = [];
@@ -245,6 +257,6 @@
 		};
 
 		PUBLIC FUNCTION("","deconstructor") { 
-
+			DEBUG(#, "OO_COMPRESS::deconstructor")
 		};
 	ENDCLASS;
